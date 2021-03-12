@@ -1,30 +1,38 @@
 import React, { FC, useCallback, useEffect } from "react";
-// import { useDispatch } from "react-redux";
-
+import { OWGames, OWWindow, OWGameListener } from "@overwolf/overwolf-api-ts";
 import { WINDOW_NAMES } from "../../utils/enum";
-import { OWGames, OWWindow } from "@overwolf/overwolf-api-ts";
-const { DESKTOP, INGAME } = WINDOW_NAMES;
 
-const gameFeatures = ["kill", "match"];
-
+const { DESKTOP, IN_GAME } = WINDOW_NAMES;
 
 const BackgroundWindow: FC = () => {
-  // const [currentGame] = useRunningGame();
   const desktopWindow = new OWWindow(DESKTOP);
-  const ingameWindow = new OWWindow(INGAME);
+  const inGameWindow = new OWWindow(IN_GAME);
 
   const openStartupWindow = useCallback(async () => {
-    // const gameRunning = currentGame?.id && currentGame?.gameRunning;
-    const currentWindow = await isRunning() ? ingameWindow : desktopWindow;
-    // gameRunning && setGameFeatures(gameFeatures);
+    gameListener.start();
+    const currentWindow = (await isRunning()) ? inGameWindow : desktopWindow;
     currentWindow?.restore();
-  }, [desktopWindow, ingameWindow]);
+  }, [desktopWindow, inGameWindow]);
 
   const isRunning = async (): Promise<boolean> => {
     const info = await OWGames.getRunningGameInfo();
-    console.log(2222, info);
-    return info && info.isRunning;
+    return info?.isRunning;
   };
+
+  const toggleWindows = (info: { isRunning: boolean }) => {
+    if (!info) return;
+
+    if (info.isRunning) {
+      inGameWindow.restore();
+    } else {
+      inGameWindow.close();
+    }
+  };
+
+  const gameListener = new OWGameListener({
+    onGameStarted: toggleWindows,
+    onGameEnded: toggleWindows,
+  });
 
   useEffect(() => {
     openStartupWindow();

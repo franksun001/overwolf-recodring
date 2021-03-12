@@ -1,7 +1,6 @@
-import React, { FC, useEffect, useState } from "react";
-// import { Title } from "components/Title";
-// import { RootReducer } from "app/rootReducer";
-// import { useSelector } from "react-redux";
+import React, { FC, useState, useEffect } from "react";
+import moment from "moment";
+import { OWHotkeys, OWWindow } from "@overwolf/overwolf-api-ts";
 
 import IconLogo from "../../assets/images/ic_logo.svg";
 import IconStop from "../../assets/in-game/ic_stop.svg";
@@ -9,26 +8,15 @@ import IconPause from "../../assets/in-game/ic_pause.svg";
 import IconStart from "../../assets/in-game/ic_start.svg";
 import IconBookmark from "../../assets/in-game/ic_bookmark.svg";
 import IconDoc from "../../assets/in-game/ic_doc.svg";
+import { WINDOW_NAMES, Hotkeys } from "../../utils/enum";
 import "./InGameWindow.less";
 
-interface StreamResult {
-  success: boolean;
-  stream_id: number;
-  SubErrorMessage: string;
-}
+const currWindow = new OWWindow(WINDOW_NAMES.IN_GAME);
 const InGameWindow: FC = () => {
-  // const { event, info } = useSelector((state: RootReducer) => state.background);
-
   const [recording, setRecording] = useState<Boolean>(false);
   const [id, setId] = useState<number>(0);
-
-  // useEffect(() => {
-  //   console.info("event", event); // or use https://github.com/AlbericoD/overwolf-modern-react-boilerplate#-remote-redux-debug
-  // }, [event]);
-
-  // useEffect(() => {
-  //   console.info("info", info); // or use https://github.com/AlbericoD/overwolf-modern-react-boilerplate#-remote-redux-debug
-  // }, [info]);
+  const [interId, setInterId] = useState<number>(0);
+  const [recorderTimer, setRecorderTimer] = useState<string>("00:00");
 
   const onStart = () => {
     console.log("start");
@@ -36,18 +24,24 @@ const InGameWindow: FC = () => {
     overwolf.streaming.onStopStreaming.addListener(console.log); //register to the onStopStreaming
     overwolf.streaming.onStreamingError.addListener(console.log); //register to the onStreamingError
     overwolf.streaming.onStreamingWarning.addListener(console.log); //register to the onStreamingWarning
+
     let settings: any = {
       audio: { mic: {}, game: {} },
-      video: {},
+      video: {
+        dication_position: "None",
+        indication_type: "NoIndication",
+      },
     };
-    console.log(overwolf.streaming.start);
     overwolf.streaming.start(
       {
         provider: "VideoRecorder" as any,
         settings,
       },
-      (res: any) => {
-        setId(res?.stream_id);
+      (result: any) => {
+        if (result.status == "success") {
+          setId(result?.stream_id);
+          setRecorder();
+        }
       },
     );
   };
@@ -55,9 +49,44 @@ const InGameWindow: FC = () => {
   const onStop = () => {
     setRecording(false);
     overwolf.streaming.stop(id, (res) => {
-      console.log(res);
+      console.log("Stop:", res);
+      window.clearInterval(interId);
     });
   };
+
+  const setRecorder = () => {
+    const start = moment();
+    const _interId: number = window.setInterval(() => {
+      const end = moment();
+      const diff = end.diff(start);
+      setRecorderTimer(moment(diff).format("mm:ss"));
+    }, 1000);
+    setInterId(_interId);
+  };
+
+  const setToggleHotkeyBehavior = async () => {
+    const toggleInGameWindow = async (
+      hotkeyResult: overwolf.settings.hotkeys.OnPressedEvent,
+    ): Promise<void> => {
+      console.log(`pressed hotkey for ${hotkeyResult.name}`);
+      const inGameState = await currWindow.getWindowState();
+
+      if (inGameState.window_state === "normal" || inGameState.window_state === "maximized") {
+        currWindow.minimize();
+      } else if (
+        inGameState.window_state === "minimized" ||
+        inGameState.window_state === "closed"
+      ) {
+        currWindow.restore();
+      }
+    };
+    OWHotkeys.onHotkeyDown(Hotkeys.TOGGLE, toggleInGameWindow);
+  };
+
+
+  useEffect(() => {
+    setToggleHotkeyBehavior();
+  }, []);
 
   return (
     <div className="in-game-root pt-3 pb-2 pl-2 h-screen rounded-tr-xl flex flex-col justify-between">
@@ -67,7 +96,7 @@ const InGameWindow: FC = () => {
           {recording && (
             <div className="recording-info ml-3 flex items-center h-6 rounded-xl">
               <div className="w-1.5 h-1.5 rounded bg-r00"></div>
-              <div className="text ml-1.5 font-bold">0:01</div>
+              <div className="text ml-1.5 font-bold">{recorderTimer}</div>
             </div>
           )}
         </div>

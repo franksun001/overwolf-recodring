@@ -1,23 +1,20 @@
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, useEffect, useRef } from "react";
+import { OWWindow } from "@overwolf/overwolf-api-ts";
 import { WINDOW_NAMES } from "../../utils/enum";
-// import { useWindow, useDrag } from "overwolf-hooks";
-
-const { DESKTOP } = WINDOW_NAMES;
 
 const DesktopHeader: FC = () => {
-  // const [desktopWindow] = useWindow(DESKTOP);
+  const desktopWindow = new OWWindow(WINDOW_NAMES.DESKTOP);
+  const headerRef: any = useRef();
 
-  // const { onDragStart, onMouseMove, setCurrentWindowID } = useDrag(null);
+  useEffect(() => {
+    if (headerRef?.current) {
+      desktopWindow.dragMove(headerRef.current);
+    }
+  }, []);
 
-  // const updateDragWindow = useCallback(() => {
-  //   if (desktopWindow?.id) setCurrentWindowID(desktopWindow.id);
-  // }, [desktopWindow, setCurrentWindowID]);
-
-  // useEffect(() => {
-  //   updateDragWindow();
-  // }, [updateDragWindow]);
-
-  return <></>;
+  return (
+    <div ref={headerRef} className="fixed top-0 left-0 right-0 z-50 h-16 bg-transparent"></div>
+  );
 };
 
 export default DesktopHeader;

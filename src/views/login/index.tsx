@@ -1,4 +1,5 @@
 import React, { FC, useState, useMemo } from "react";
+import { useHistory } from "react-router-dom";
 
 import Input from "../../components/component_input";
 import Button from "../../components/component_button";
@@ -17,8 +18,11 @@ import "./index.less";
 const Login: FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const history = useHistory();
   const login = () => {
     console.log("Login");
+    localStorage.setItem("isLogin", "1") //TODO
+    history.push('/')
   };
   const googleLogin = () => {
     console.log("Google Login");

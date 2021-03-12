@@ -6,7 +6,7 @@ import { WINDOW_NAMES } from "./utils/enum";
 
 import "./App.css";
 
-const { BACKGROUND, DESKTOP, INGAME } = WINDOW_NAMES;
+const { BACKGROUND, DESKTOP, IN_GAME } = WINDOW_NAMES;
 
 const CurrentPage = ({ page }: { page: string }): JSX.Element => {
   switch (page) {
@@ -14,7 +14,7 @@ const CurrentPage = ({ page }: { page: string }): JSX.Element => {
       return <BackgroundWindow />;
     case DESKTOP:
       return <DesktopWindow />;
-    case INGAME:
+    case IN_GAME:
       return <InGameWindow />;
     default:
       return <p>Loading</p>;

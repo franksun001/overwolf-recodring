@@ -12,11 +12,10 @@
     "window_icon": "TaskbarIcon.png",
     "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
   },
-  "permissions": ["GameInfo"],
+  "permissions": ["Hotkeys", "GameInfo"],
   "data": {
     "game_targeting": {
-      "type": "dedicated",
-      "game_ids": [7764]
+      "type": "all"
     },
     "launch_events": [
       {
@@ -31,12 +30,12 @@
     "start_window": "background",
     "windows": {
       "background": {
-        "file": "Files/index.html",
+        "file": "index.html",
         "background_optimization": false,
         "is_background_page": true
       },
       "desktop": {
-        "file": "Files/index.html",
+        "file": "index.html",
         "native_window": true,
         "transparent": true,
         "resizable": false,
@@ -55,9 +54,10 @@
         "desktop_only": true
       },
       "in_game": {
-        "file": "Files/index.html",
+        "file": "index.html",
         "in_game_only": true,
         "focus_game_takeover": "ReleaseOnHidden",
+        "focus_game_takeover_release_hotkey": "showhide",
         "block_top_window_navigation": true,
         "transparent": true,
         "resizable": true,
@@ -73,6 +73,13 @@
           "left": 0,
           "top": 9999
         }
+      }
+    },
+    "hotkeys": {
+      "showhide": {
+        "title": "Show/Hide In-Game Window",
+        "action-type": "toggle",
+        "default": "F11"
       }
     },
     "block_top_window_navigation": true,
