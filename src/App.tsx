@@ -1,26 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { FC, useEffect, useState } from "react";
+import InGameWindow from "./views/in-game-window/InGameWindow";
+import DesktopWindow from "./views/desktop-window/DesktopWindow";
+import BackgroundWindow from "./views/background-window/BackgroundWindow";
+import { WINDOW_NAMES } from "./utils/enum";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+import "./App.css";
+
+const { BACKGROUND, DESKTOP, INGAME } = WINDOW_NAMES;
+
+const CurrentPage = ({ page }: { page: string }): JSX.Element => {
+  switch (page) {
+    case BACKGROUND:
+      return <BackgroundWindow />;
+    case DESKTOP:
+      return <DesktopWindow />;
+    case INGAME:
+      return <InGameWindow />;
+    default:
+      return <p>Loading</p>;
+  }
+};
+
+const getCurrentWindow = (): Promise<string> =>
+  new Promise((resolve) =>
+    overwolf.windows.getCurrentWindow((result) => {
+      resolve(result.window.name);
+    }),
   );
-}
+
+const App: FC = (): JSX.Element => {
+  const [page, setPage] = useState<string>("");
+
+  useEffect(() => {
+    async function preLoad() {
+      if (process.env.NODE_ENV === "development") {
+        console.log("Browser", process.env.NODE_ENV);
+        setPage(DESKTOP);
+      } else {
+        const currentWindow = await getCurrentWindow();
+        console.log("Overwolf", currentWindow);
+        setPage(currentWindow);
+      }
+    }
+    preLoad();
+  }, []);
+  return <CurrentPage page={page} />;
+};
 
 export default App;

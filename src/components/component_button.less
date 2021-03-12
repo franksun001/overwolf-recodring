@@ -1,0 +1,26 @@
+.button-root {
+  padding: 0 50px;
+  height: 50px;
+  border-radius: 10px;
+  &.default {
+    border-radius: 12px;
+    border-color: rgba(121, 134, 148, 0.25);
+    &:hover {
+      border-color: #1379ff;
+    }
+  }
+  &.primary {
+    background-color: #be3434;
+    box-shadow: 0px 5px 25px rgba(241, 67, 67, 0.15);
+  }
+  &.dashed {
+    border-color: rgba(121, 134, 148, 0.45);
+    border-style: dashed;
+  }
+  &:focus {
+    outline: none;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}

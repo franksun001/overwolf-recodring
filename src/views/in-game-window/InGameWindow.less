@@ -1,0 +1,35 @@
+.in-game-root {
+  padding-right: 18px;
+  background-color: rgba(36, 38, 48, 0.8);
+
+  .top-wrap {
+    .icon-logo {
+      width: 19px;
+      height: 17px;
+    }
+    .right-wrap {
+      > img {
+        @apply cursor-pointer;
+      }
+      .icon-pause {
+        width: 9px;
+      }
+      .icon-doc {
+        width: 14.5px;
+      }
+    }
+    .recording-info {
+      padding: 0 9px;
+      background-color: rgba(121, 134, 148, 0.12);
+      backdrop-filter: blur(20px);
+      .text {
+        font-size: 10px;
+      }
+    }
+  }
+  .bottom-wrap {
+    .bottom-tips {
+      font-size: 10px;
+    }
+  }
+}

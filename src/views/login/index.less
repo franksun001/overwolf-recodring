@@ -1,0 +1,24 @@
+.login-root {
+  .login-container {
+    margin-top: 68px;
+    width: 450px;
+    .title {
+      font-size: 32px;
+    }
+    .tips span {
+      background: linear-gradient(to right, #ffffff, rgb(241, 67, 67), rgb(19, 121, 255));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .dividing-line {
+      height: 1px;
+      background: linear-gradient(270deg, #1379ff 0%, rgba(19, 121, 255, 0) 100%);
+      &:last-child {
+        transform: matrix(-1, 0, 0, 1, 0, 0);
+      }
+    }
+    .bottom-btns > button {
+      @apply text-sm px-7;
+    }
+  }
+}

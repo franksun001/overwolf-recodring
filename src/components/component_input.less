@@ -1,0 +1,24 @@
+.input-root {
+  input {
+    height: 60px;
+    caret-color: #1379ff;
+    border: 1.5px solid transparent;
+    &.pw {
+      padding-right: 45px;
+      &:not(.visible) {
+        letter-spacing: 18px;
+      }
+    }
+    &:focus {
+      background: linear-gradient(#242630, #242630) padding-box,
+        linear-gradient(
+            to right,
+            rgba(241, 67, 67, 0.2),
+            rgba(241, 67, 67, 1),
+            rgba(241, 67, 67, 0.2)
+          )
+          border-box;
+      outline-width: 0;
+    }
+  }
+}
