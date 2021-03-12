@@ -17,9 +17,7 @@ const DesktopHeader: FC = () => {
   //   updateDragWindow();
   // }, [updateDragWindow]);
 
-  return (
-    <div>header</div>
-  );
+  return <></>;
 };
 
 export default DesktopHeader;
