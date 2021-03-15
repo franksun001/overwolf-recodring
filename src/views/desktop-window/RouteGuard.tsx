@@ -1,16 +1,13 @@
 import React, { FC } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
+import _ from "lodash";
 import { desktopRouters } from "../../utils/routers";
+import { getToken } from "../../utils/authStorage";
 
 const RouteGuard: FC = () => {
-  console.log(window.location);
-  // TODO
-  const isLogin = Boolean(
-    localStorage.getItem("isLogin") && Number(localStorage.getItem("isLogin")),
-  );
-  // TODO
+  const isLogin = !_.isEmpty(getToken());
+
   const renderRoutes = () => {
-    console.log(isLogin, window.location.hash);
     if (!isLogin && window.location.hash !== "#/sign-in") {
       return <Redirect to="/sign-in" />;
     } else {

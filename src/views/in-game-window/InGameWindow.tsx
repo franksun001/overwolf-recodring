@@ -38,7 +38,7 @@ const InGameWindow: FC = () => {
         settings,
       },
       (result: any) => {
-        if (result.status == "success") {
+        if (result.status === "success") {
           setId(result?.stream_id);
           setRecorder();
         }

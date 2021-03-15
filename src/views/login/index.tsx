@@ -1,9 +1,11 @@
 import React, { FC, useState, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
+import { ButtonType } from "../../utils/enum";
+import { setToken } from "../../utils/authStorage";
+import { userLogin } from "../../mock_data";
 import Input from "../../components/component_input";
 import Button from "../../components/component_button";
-import { ButtonType } from "../../utils/enum";
 
 import IconLogo from "../../assets/images/ic_logo.svg";
 import IconGoogle from "../../assets/images/login/ic_google.svg";
@@ -18,12 +20,19 @@ import "./index.less";
 const Login: FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
-  const login = () => {
-    console.log("Login");
-    localStorage.setItem("isLogin", "1") //TODO
-    history.push('/')
+
+  const login = async () => {
+    setLoading(true);
+    const res: any = await userLogin(username, password);
+    if (res?.access_token) {
+      setToken(res.access_token);
+      history.push("/");
+    }
+    setLoading(false);
   };
+
   const googleLogin = () => {
     console.log("Google Login");
   };
@@ -35,6 +44,7 @@ const Login: FC = () => {
   };
 
   const loginDisabled = useMemo(() => !username.length || !password.length, [username, password]);
+
   return (
     <div className="login-root flex flex-col items-center relative z-0 h-screen">
       <img src={IconLogo} alt="logo" className="mt-8 w-9 h-8" />
@@ -55,7 +65,12 @@ const Login: FC = () => {
           onChange={(value: string) => setPassword(value)}
         />
         <div className="mt-6 flex items-center justify-between">
-          <Button type={ButtonType.PRIMARY} disabled={loginDisabled} onClick={login}>
+          <Button
+            type={ButtonType.PRIMARY}
+            disabled={loginDisabled}
+            loading={loading}
+            onClick={login}
+          >
             Login
           </Button>
           <div className="text-sm text-g00">
@@ -92,7 +107,5 @@ const Login: FC = () => {
     </div>
   );
 };
-
-// Login.propTypes = {};
 
 export default Login;
